@@ -17,13 +17,15 @@ app.listen(PORT, () => {
 
 let clients = [];
 
-function eventsHandler(request, response, next) {
+app.get('/status', (request, response) => response.json({clients: clients.length}));
+
+function subscribe(request, response, next) {
     response.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache'
     });
-    response.write(`data: ${JSON.stringify({'system_message': 'event-hub app'})}`);
+    response.write(`data: ${JSON.stringify({'system_message': 'event-hub app'})}\n\n`);
 
     const clientId = Date.now();
 
@@ -39,12 +41,12 @@ function eventsHandler(request, response, next) {
         clients = clients.filter(client => client.id !== clientId);
     });
 }
-app.get('/events', eventsHandler);
+app.get('/events', subscribe);
 
 
 
 function broadcastEvents(newEvent) {
-    clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}`))
+    clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
 }
 async function notifyEvent(request, response, next) {
     response.json(request.body);
