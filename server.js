@@ -22,6 +22,7 @@ app.get('/status', (request, response) => response.json({clients: clients.length
 function subscribe(request, response, next) {
     if (request.get('x-api-key') !== process.env.API_KEY) {
         response.status(401).send('Invalid API key');
+        return;
     }
 
     response.writeHead(200, {
