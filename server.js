@@ -47,8 +47,7 @@ function broadcastEvents(newEvent) {
     clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}`))
 }
 async function notifyEvent(request, response, next) {
-    response.set('Content-Type', 'text/plain');
-    response.send('accepted');
+    response.json({challenge : 'verified'});
     return broadcastEvents(request.body);
 }
 app.post('/events', notifyEvent);
