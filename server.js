@@ -54,6 +54,7 @@ function broadcastEvents(newEvent) {
     clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
 }
 async function notifyEvent(request, response, next) {
+    console.log(JSON.stringify(request.headers));
     response.json(request.body);
     return broadcastEvents(request.body);
 }
