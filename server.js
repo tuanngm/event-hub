@@ -20,12 +20,16 @@ let clients = [];
 app.get('/status', (request, response) => response.json({clients: clients.length}));
 
 function subscribe(request, response, next) {
+    if (request.get('x-api-key') !== process.env.API_KEY) {
+        response.status(401).send('Invalid API key');
+    }
+
     response.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Connection': 'keep-alive',
         'Cache-Control': 'no-cache'
     });
-    response.write(`data: ${JSON.stringify({'system_message': 'event-hub app'})}\n\n`);
+    response.write(`data: ${JSON.stringify({'system_message': 'Welcome to EventHub!'})}\n\n`);
 
     const clientId = Date.now();
 
