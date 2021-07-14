@@ -48,7 +48,7 @@ function broadcastEvents(newEvent) {
 }
 async function notifyEvent(request, response, next) {
     response.set('Content-Type', 'text/plain');
-    res.send('accepted');
+    response.send('accepted');
     return broadcastEvents(request.body);
 }
 app.post('/events', notifyEvent);
