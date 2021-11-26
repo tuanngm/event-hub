@@ -17,7 +17,7 @@ app.listen(PORT, () => {
 
 let clients = [];
 
-app.get('/status', (request, response) => response.json({clients: clients.length}));
+app.get('/status', (request, response) => response.json({clients: clients.length, details: clients}));
 
 function subscribe(request, response, next) {
     if (request.get('x-api-key') !== process.env.API_KEY) {
@@ -36,7 +36,9 @@ function subscribe(request, response, next) {
 
     const newClient = {
         id: clientId,
-        response
+        name: request.get('x-client-name'),
+        host: request.get('x-host-name'),
+        response: response
     };
 
     clients.push(newClient);
