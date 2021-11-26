@@ -16,6 +16,7 @@ app.listen(PORT, () => {
 
 
 let clients = [];
+let subscribers = [];
 
 app.get('/status', (request, response) => response.json({clients: clients.length, details: clients}));
 
@@ -37,11 +38,15 @@ function subscribe(request, response, next) {
     const newClient = {
         id: clientId,
         name: request.get('x-client-name'),
-        host: request.get('x-host-name'),
+        host: request.get('x-host-name')
+    };
+    const newSubscriber = {
+        id: clientId,
         response: response
     };
 
     clients.push(newClient);
+    subscribers.push(newSubscriber);
 
     request.on('close', () => {
         console.log(`${clientId} Connection closed`);
@@ -53,7 +58,7 @@ app.get('/events', subscribe);
 
 
 function broadcastEvents(newEvent) {
-    clients.forEach(client => client.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
+    subscribers.forEach(subscriber => subscriber.response.write(`data: ${JSON.stringify(newEvent)}\n\n`))
 }
 async function notifyEvent(request, response, next) {
     console.log('request.headers=' + JSON.stringify(request.headers));
